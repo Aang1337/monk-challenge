@@ -18,17 +18,17 @@ export default function GoalsPage() {
     );
   }
 
-  // Calculate stats
-  const totalDays = Object.keys(data.logs).length;
-  const last30Days = Object.keys(data.logs)
-    .sort()
-    .slice(-30);
+  // Calculate stats with proper null safety
+  const totalDays = data?.logs ? Object.keys(data.logs).length : 0;
+  const last30Days = data?.logs
+    ? Object.keys(data.logs).sort().slice(-30)
+    : [];
 
   // Calculate completion rate for last 30 days
   const completionData = last30Days.map(date => {
-    const dayLogs = data.logs[date] || {};
+    const dayLogs = data?.logs?.[date] || {};
     const completed = Object.values(dayLogs).filter(Boolean).length;
-    const total = data.habits.length;
+    const total = data?.habits?.length || 0;
     const rate = total > 0 ? (completed / total) * 100 : 0;
     return {
       date,
@@ -40,52 +40,57 @@ export default function GoalsPage() {
   let currentStreak = 0;
   let longestStreak = 0;
 
-  const allDates = Object.keys(data.logs).sort();
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
+  // Only calculate streaks if we have habits
+  if (data?.habits && data.habits.length > 0 && data?.logs) {
+    const allDates = Object.keys(data.logs).sort();
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
 
-  // Check current streak (backwards from today)
-  for (let i = 0; i < 365; i++) {
-    const checkDate = new Date(today);
-    checkDate.setDate(checkDate.getDate() - i);
-    const dateStr = checkDate.toISOString().split('T')[0];
+    // Check current streak (backwards from today)
+    for (let i = 0; i < 365; i++) {
+      const checkDate = new Date(today);
+      checkDate.setDate(checkDate.getDate() - i);
+      const dateStr = checkDate.toISOString().split('T')[0];
 
-    const dayLogs = data.logs[dateStr] || {};
-    const completed = Object.values(dayLogs).filter(Boolean).length;
-    const isComplete = completed === data.habits.length && data.habits.length > 0;
+      const dayLogs = data.logs[dateStr] || {};
+      const completed = Object.values(dayLogs).filter(Boolean).length;
+      const isComplete = completed === data.habits.length;
 
-    if (isComplete) {
-      currentStreak++;
-    } else {
-      break;
+      if (isComplete) {
+        currentStreak++;
+      } else {
+        break;
+      }
     }
-  }
 
-  // Calculate longest streak
-  let tempStreak = 0;
-  for (let i = 0; i < allDates.length; i++) {
-    const date = allDates[i];
-    const dayLogs = data.logs[date] || {};
-    const completed = Object.values(dayLogs).filter(Boolean).length;
-    const isComplete = completed === data.habits.length && data.habits.length > 0;
+    // Calculate longest streak
+    let tempStreak = 0;
+    for (let i = 0; i < allDates.length; i++) {
+      const date = allDates[i];
+      const dayLogs = data.logs[date] || {};
+      const completed = Object.values(dayLogs).filter(Boolean).length;
+      const isComplete = completed === data.habits.length;
 
-    if (isComplete) {
-      tempStreak++;
-      longestStreak = Math.max(longestStreak, tempStreak);
-    } else {
-      tempStreak = 0;
+      if (isComplete) {
+        tempStreak++;
+        longestStreak = Math.max(longestStreak, tempStreak);
+      } else {
+        tempStreak = 0;
+      }
     }
   }
 
   // Calculate total completions
-  const totalCompletions = Object.values(data.logs).reduce((sum, dayLogs) => {
-    return sum + Object.values(dayLogs).filter(Boolean).length;
-  }, 0);
+  const totalCompletions = data?.logs
+    ? Object.values(data.logs).reduce((sum, dayLogs) => {
+      return sum + Object.values(dayLogs || {}).filter(Boolean).length;
+    }, 0)
+    : 0;
 
   // Calculate average completion rate (capped at 100%)
-  const avgCompletionRate = totalDays > 0
+  const avgCompletionRate = totalDays > 0 && data?.logs && data?.habits
     ? Math.min(100, (Object.values(data.logs).reduce((sum, dayLogs) => {
-      const completed = Object.values(dayLogs).filter(Boolean).length;
+      const completed = Object.values(dayLogs || {}).filter(Boolean).length;
       return sum + (data.habits.length > 0 ? (completed / data.habits.length) * 100 : 0);
     }, 0) / totalDays))
     : 0;
@@ -101,7 +106,7 @@ export default function GoalsPage() {
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 relative">
         {/* Current Streak */}
-        <div className="bg-gradient-to-br from-orange-500/10 to-orange-600/5 backdrop-blur-xl border border-orange-500/20 rounded-xl p-4">
+        <div className="bg-gradient-to-br from-orange-500/10 to-orange-600/5 backdrop-blur-xl border border-orange-500/20 rounded-2xl p-6">
           <div className="flex items-center gap-3 mb-2">
             <div className="w-10 h-10 rounded-xl bg-orange-500/10 flex items-center justify-center">
               <svg className="w-5 h-5 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">

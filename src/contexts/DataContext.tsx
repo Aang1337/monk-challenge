@@ -57,9 +57,24 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    // Load data from Drive
+    // Load data from Drive or localStorage
     const loadData = useCallback(async () => {
-        if (!isAuthenticated || !gapiInitialized) return;
+        // If not authenticated, use localStorage
+        if (!isAuthenticated || !gapiInitialized) {
+            try {
+                const stored = localStorage.getItem('monk-mode-data');
+                if (stored) {
+                    setData(JSON.parse(stored));
+                } else {
+                    setData(INITIAL_DATA);
+                }
+            } catch (err) {
+                console.error("Failed to load from localStorage:", err);
+                setData(INITIAL_DATA);
+            }
+            setIsLoading(false);
+            return;
+        }
 
         setIsLoading(true);
         setError(null);
@@ -87,17 +102,28 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
     useEffect(() => {
         if (isAuthenticated && gapiInitialized) {
             loadData();
-        } else if (!isAuthenticated) {
-            setData(INITIAL_DATA);
-            setIsLoading(false);
+        } else {
+            // Load from localStorage when not authenticated
+            loadData();
         }
     }, [isAuthenticated, gapiInitialized, loadData]);
 
-    // Helper to update state and sync to Drive
+    // Helper to update state and sync to Drive or localStorage
     const updateData = async (newData: Data) => {
         // Optimistic update
         setData(newData);
 
+        // If not authenticated, save to localStorage
+        if (!isAuthenticated || !fileId) {
+            try {
+                localStorage.setItem('monk-mode-data', JSON.stringify(newData));
+            } catch (err) {
+                console.error("Failed to save to localStorage:", err);
+            }
+            return;
+        }
+
+        // Otherwise save to Google Drive
         if (fileId) {
             try {
                 await updateFile(fileId, newData);
