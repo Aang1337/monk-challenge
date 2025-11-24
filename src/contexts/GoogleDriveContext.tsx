@@ -4,7 +4,7 @@ import React, { createContext, useContext, useEffect, useState, useCallback } fr
 import Script from 'next/script';
 
 const CLIENT_ID = '143278814984-jmt5nbg1vl09vc0od9tntmtuvdn4bhhl.apps.googleusercontent.com';
-const SCOPES = 'https://www.googleapis.com/auth/drive.file';
+const SCOPES = 'https://www.googleapis.com/auth/drive.file openid profile email';
 
 interface GoogleDriveContextType {
     user: any | null;

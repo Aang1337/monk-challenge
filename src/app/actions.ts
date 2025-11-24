@@ -24,39 +24,39 @@ export async function getHabitData(): Promise<Data> {
 
 export async function toggleHabitAction(date: string, habitId: string) {
     await toggleHabit(date, habitId);
-    revalidatePath('/');
+    revalidatePath('/', 'layout');
 }
 
 export async function addHabitAction(habit: Habit) {
     await addHabit(habit);
-    revalidatePath('/');
+    revalidatePath('/', 'layout');
 }
 
 export async function updateHabitAction(habit: Habit) {
     await updateHabit(habit);
-    revalidatePath('/');
+    revalidatePath('/', 'layout');
 }
 
 export async function deleteHabitAction(habitId: string) {
     await deleteHabit(habitId);
-    revalidatePath('/');
+    revalidatePath('/', 'layout');
 }
 
 export async function reorderHabitsAction(habits: Habit[]) {
     await reorderHabits(habits);
-    revalidatePath('/');
+    revalidatePath('/', 'layout');
 }
 
 export async function saveNoteAction(date: string, note: string) {
     await saveNote(date, note);
-    revalidatePath('/');
+    revalidatePath('/', 'layout');
 }
 
 export async function importDataAction(jsonString: string) {
     try {
         const data = JSON.parse(jsonString);
         await importData(data);
-        revalidatePath('/');
+        revalidatePath('/', 'layout');
         return { success: true };
     } catch (error) {
         console.error("Import failed:", error);
@@ -66,22 +66,35 @@ export async function importDataAction(jsonString: string) {
 
 export async function updatePomodoroTimeAction(minutes: number) {
     await updatePomodoroTime(minutes);
-    revalidatePath('/');
+    revalidatePath('/', 'layout');
     return { success: true };
 }
 
 // Daily Task Actions
 export async function addDailyTaskAction(date: string, label: string) {
     await addDailyTask(date, label);
-    revalidatePath('/');
+    revalidatePath('/', 'layout');
 }
 
 export async function deleteDailyTaskAction(date: string, taskId: string) {
     await deleteDailyTask(date, taskId);
-    revalidatePath('/');
+    revalidatePath('/', 'layout');
 }
 
 export async function toggleDailyTaskAction(date: string, taskId: string) {
     await toggleDailyTask(date, taskId);
-    revalidatePath('/');
+    revalidatePath('/', 'layout');
+}
+
+export async function resetDataAction() {
+    const emptyData: Data = {
+        habits: [],
+        dailyTasks: {},
+        logs: {},
+        notes: {},
+        pomodoro: {}
+    };
+    await importData(emptyData);
+    revalidatePath('/', 'layout');
+    return { success: true };
 }

@@ -66,19 +66,27 @@ export default function Sidebar() {
             {/* Bottom Actions */}
             <div className="flex flex-col gap-4 mt-auto">
                 {/* Login/Logout Button */}
-                {isAuthenticated && user?.picture ? (
+                {/* Login/Logout Button */}
+                {isAuthenticated ? (
                     <button
                         onClick={logout}
-                        className="w-10 h-10 rounded-lg overflow-hidden relative group"
+                        className="w-10 h-10 rounded-lg overflow-hidden relative group flex items-center justify-center bg-surface-hover"
                         aria-label="Logout"
                     >
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={user.picture} alt={user.name} className="w-full h-full object-cover" />
+                        {user?.picture ? (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img src={user.picture} alt={user.name} className="w-full h-full object-cover" />
+                        ) : (
+                            <span className="font-bold text-foreground text-sm">
+                                {user?.name?.charAt(0) || 'U'}
+                            </span>
+                        )}
+
                         <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                             <LogOut size={16} className="text-white" />
                         </div>
                         <span className="absolute left-full ml-2 px-2 py-1 bg-foreground text-background text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-50">
-                            Logout ({user.name})
+                            Logout ({user?.name || 'User'})
                         </span>
                     </button>
                 ) : (

@@ -2,6 +2,8 @@ import { getHabitData } from '@/app/actions';
 import Tools from '@/components/Tools';
 import HabitManager from '@/components/HabitManager';
 
+import DataResetSection from '@/components/DataResetSection';
+
 export default async function SettingsPage() {
     const data = await getHabitData();
 
@@ -52,6 +54,9 @@ export default async function SettingsPage() {
                         </div>
                         <Tools data={data} />
                     </div>
+
+                    {/* Reset Data Section */}
+                    <DataResetSection />
 
                     {/* Stats Card */}
                     <div className="bg-gradient-to-br from-emerald-500/10 to-emerald-600/5 backdrop-blur-xl border border-emerald-500/20 rounded-2xl p-6">
