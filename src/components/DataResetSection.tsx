@@ -6,7 +6,7 @@ import { resetDataAction } from '@/app/actions';
 
 export default function DataResetSection() {
     const [showModal, setShowModal] = useState(false);
-    const [countdown, setCountdown] = useState(120);
+    const [countdown, setCountdown] = useState(5);
     const [isDeleting, setIsDeleting] = useState(false);
 
     useEffect(() => {
@@ -24,14 +24,14 @@ export default function DataResetSection() {
         await resetDataAction();
         setIsDeleting(false);
         setShowModal(false);
-        setCountdown(120);
+        setCountdown(5);
         // Optional: Force reload to clear any client state
         window.location.reload();
     };
 
     const openModal = () => {
         setShowModal(true);
-        setCountdown(120);
+        setCountdown(5);
     };
 
     return (
