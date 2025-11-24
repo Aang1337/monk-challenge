@@ -115,6 +115,16 @@ export default function Home() {
               whileTap={{ scale: 0.95 }}
               className="p-4 bg-transparent backdrop-blur-xl border border-border/50 rounded-xl hover:border-foreground/20 transition-all cursor-pointer group"
             >
+              <div className="text-3xl mb-3 group-hover:scale-110 transition-transform">📚</div>
+              <h3 className="font-semibold mb-1">Books</h3>
+              <p className="text-xs text-muted">Track reading</p>
+            </motion.div>
+
+            <motion.div
+              whileHover={{ scale: 1.05, y: -5 }}
+              whileTap={{ scale: 0.95 }}
+              className="p-4 bg-transparent backdrop-blur-xl border border-border/50 rounded-xl hover:border-foreground/20 transition-all cursor-pointer group"
+            >
               <div className="text-3xl mb-3 group-hover:scale-110 transition-transform">⚙️</div>
               <h3 className="font-semibold mb-1">Settings</h3>
               <p className="text-xs text-muted">Manage data</p>

@@ -5,6 +5,7 @@ import { useGoogleDrive } from './GoogleDriveContext';
 import {
     Data,
     Habit,
+    Book,
     INITIAL_DATA,
     findFile,
     createFile,
@@ -30,6 +31,12 @@ interface DataContextType {
     deleteDailyTask: (date: string, taskId: string) => Promise<void>;
     toggleDailyTask: (date: string, taskId: string) => Promise<void>;
     resetData: () => Promise<void>;
+
+    // Book Actions
+    addBook: (book: Book) => Promise<void>;
+    updateBook: (book: Book) => Promise<void>;
+    deleteBook: (bookId: string) => Promise<void>;
+    reorderBooks: (books: Book[]) => Promise<void>;
 }
 
 const DataContext = createContext<DataContextType>({
@@ -48,6 +55,10 @@ const DataContext = createContext<DataContextType>({
     deleteDailyTask: async () => { },
     toggleDailyTask: async () => { },
     resetData: async () => { },
+    addBook: async () => { },
+    updateBook: async () => { },
+    deleteBook: async () => { },
+    reorderBooks: async () => { },
 });
 
 export const useData = () => useContext(DataContext);
@@ -240,6 +251,29 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
         await updateData(INITIAL_DATA);
     };
 
+    const addBook = async (book: Book) => {
+        const newBooks = [...(data.books || []), book];
+        const newData = { ...data, books: newBooks };
+        await updateData(newData);
+    };
+
+    const updateBook = async (book: Book) => {
+        const newBooks = (data.books || []).map(b => b.id === book.id ? book : b);
+        const newData = { ...data, books: newBooks };
+        await updateData(newData);
+    };
+
+    const deleteBook = async (bookId: string) => {
+        const newBooks = (data.books || []).filter(b => b.id !== bookId);
+        const newData = { ...data, books: newBooks };
+        await updateData(newData);
+    };
+
+    const reorderBooks = async (books: Book[]) => {
+        const newData = { ...data, books };
+        await updateData(newData);
+    };
+
     return (
         <DataContext.Provider value={{
             data,
@@ -256,7 +290,11 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
             addDailyTask,
             deleteDailyTask,
             toggleDailyTask,
-            resetData
+            resetData,
+            addBook,
+            updateBook,
+            deleteBook,
+            reorderBooks
         }}>
             {children}
         </DataContext.Provider>

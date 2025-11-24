@@ -11,12 +11,25 @@ export interface DailyTask {
     date: string; // ISO date string (YYYY-MM-DD)
 }
 
+export interface Book {
+    id: string;
+    title: string;
+    author?: string;
+    coverUrl?: string;
+    status: 'to-read' | 'reading' | 'finished';
+    order: number; // For drag-and-drop ordering in 'to-read'
+    addedAt: string;
+    startedAt?: string;
+    finishedAt?: string;
+}
+
 export interface Data {
     habits: Habit[]; // Permanent recurring habits
     dailyTasks: Record<string, DailyTask[]>; // date -> tasks for that specific day
     logs: Record<string, Record<string, boolean>>; // date -> { habitId/taskId -> completed }
     notes: Record<string, string>; // date -> note content
     pomodoro?: Record<string, number>; // date -> minutes
+    books: Book[]; // List of books
 }
 
 export const INITIAL_DATA: Data = {
@@ -24,7 +37,8 @@ export const INITIAL_DATA: Data = {
     dailyTasks: {},
     logs: {},
     notes: {},
-    pomodoro: {}
+    pomodoro: {},
+    books: []
 };
 
 const FILE_NAME = 'monk-mode-data.json';

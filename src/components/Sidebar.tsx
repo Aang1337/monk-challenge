@@ -1,6 +1,6 @@
 'use client';
 
-import { Home, Calendar, Target, Settings, Sun, Moon, Timer, LogIn, LogOut } from 'lucide-react';
+import { Home, Calendar, Target, Settings, Sun, Moon, Timer, LogIn, LogOut, Book } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
@@ -23,6 +23,7 @@ export default function Sidebar() {
         { icon: Calendar, label: 'Calendar', href: '/calendar' },
         { icon: Timer, label: 'Pomodoro', href: '/pomodoro' },
         { icon: Target, label: 'Goals', href: '/goals' },
+        { icon: Book, label: 'Books', href: '/books' },
         { icon: Settings, label: 'Settings', href: '/settings' },
     ];
 
