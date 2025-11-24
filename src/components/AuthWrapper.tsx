@@ -36,7 +36,7 @@ export default function AuthWrapper({ children }: { children: React.ReactNode })
         return (
             <div className="relative z-10">
                 <Sidebar />
-                <div className="pl-16">
+                <div className="md:pl-16 pt-14 md:pt-0 pb-20 md:pb-0">
                     {children}
                 </div>
             </div>
@@ -64,7 +64,7 @@ export default function AuthWrapper({ children }: { children: React.ReactNode })
     return (
         <div className="relative z-10">
             <Sidebar />
-            <div className="pl-16">
+            <div className="md:pl-16 pt-14 md:pt-0 pb-20 md:pb-0">
                 {children}
             </div>
         </div>

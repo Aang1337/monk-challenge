@@ -27,17 +27,101 @@ export default function Sidebar() {
     ];
 
     return (
-        <aside className="fixed left-0 top-0 h-screen w-16 bg-surface border-r border-border flex flex-col items-center py-6 gap-6 z-50">
-            {/* Logo */}
-            <Link
-                href="/"
-                className="w-10 h-10 rounded-lg bg-foreground text-background flex items-center justify-center font-bold text-xl hover:opacity-90 transition-opacity"
-            >
-                M
-            </Link>
+        <>
+            {/* Desktop Sidebar - Hidden on mobile */}
+            <aside className="hidden md:flex fixed left-0 top-0 h-screen w-16 bg-surface border-r border-border flex-col items-center py-6 gap-6 z-50">
+                {/* Logo */}
+                <Link
+                    href="/"
+                    className="w-10 h-10 rounded-lg bg-foreground text-background flex items-center justify-center font-bold text-xl hover:opacity-90 transition-opacity"
+                >
+                    M
+                </Link>
 
-            {/* Navigation */}
-            <nav className="flex-1 flex flex-col gap-2">
+                {/* Navigation */}
+                <nav className="flex-1 flex flex-col gap-2">
+                    {navItems.map((item) => {
+                        const Icon = item.icon;
+                        const isActive = pathname === item.href;
+
+                        return (
+                            <Link
+                                key={item.href}
+                                href={item.href}
+                                className={clsx(
+                                    'w-10 h-10 rounded-lg flex items-center justify-center transition-all relative group',
+                                    isActive
+                                        ? 'bg-foreground text-background'
+                                        : 'text-muted hover:text-foreground hover:bg-surface-hover'
+                                )}
+                                aria-label={item.label}
+                            >
+                                <Icon size={20} />
+                                <span className="absolute left-full ml-2 px-2 py-1 bg-foreground text-background text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+                                    {item.label}
+                                </span>
+                            </Link>
+                        );
+                    })}
+                </nav>
+
+                {/* Bottom Actions */}
+                <div className="flex flex-col gap-4 mt-auto">
+                    {/* Login/Logout Button */}
+                    {isAuthenticated ? (
+                        <button
+                            onClick={logout}
+                            className="w-10 h-10 rounded-lg overflow-hidden relative group flex items-center justify-center bg-surface-hover"
+                            aria-label="Logout"
+                        >
+                            {user?.picture ? (
+                                // eslint-disable-next-line @next/next/no-img-element
+                                <img src={user.picture} alt={user.name} className="w-full h-full object-cover" />
+                            ) : (
+                                <span className="font-bold text-foreground text-sm">
+                                    {user?.name?.charAt(0) || 'U'}
+                                </span>
+                            )}
+
+                            <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                <LogOut size={16} className="text-white" />
+                            </div>
+                            <span className="absolute left-full ml-2 px-2 py-1 bg-foreground text-background text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-50">
+                                Logout ({user?.name || 'User'})
+                            </span>
+                        </button>
+                    ) : (
+                        <button
+                            onClick={login}
+                            className="w-10 h-10 rounded-lg flex items-center justify-center text-muted hover:text-foreground hover:bg-surface-hover transition-all group relative"
+                            aria-label="Login with Google"
+                        >
+                            <LogIn size={20} />
+                            <span className="absolute left-full ml-2 px-2 py-1 bg-foreground text-background text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+                                Login with Google
+                            </span>
+                        </button>
+                    )}
+
+                    {/* Theme Toggle */}
+                    <button
+                        onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+                        className="w-10 h-10 rounded-lg flex items-center justify-center text-muted hover:text-foreground hover:bg-surface-hover transition-all"
+                        aria-label="Toggle theme"
+                    >
+                        {!mounted ? (
+                            <Sun size={20} />
+                        ) : theme === 'dark' ? (
+                            <Sun size={20} />
+                        ) : (
+                            <Moon size={20} />
+                        )}
+                    </button>
+                </div>
+            </aside>
+
+            {/* Mobile Bottom Navigation - Hidden on desktop */}
+            <nav className="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-surface border-t border-border flex items-center justify-around px-2 z-50 pb-safe">
                 {navItems.map((item) => {
                     const Icon = item.icon;
                     const isActive = pathname === item.href;
@@ -47,76 +131,74 @@ export default function Sidebar() {
                             key={item.href}
                             href={item.href}
                             className={clsx(
-                                'w-10 h-10 rounded-lg flex items-center justify-center transition-all relative group',
+                                'flex flex-col items-center justify-center gap-1 px-3 py-2 rounded-lg transition-all min-w-[48px] min-h-[48px]',
                                 isActive
                                     ? 'bg-foreground text-background'
-                                    : 'text-muted hover:text-foreground hover:bg-surface-hover'
+                                    : 'text-muted active:bg-surface-hover'
                             )}
                             aria-label={item.label}
                         >
                             <Icon size={20} />
-                            <span className="absolute left-full ml-2 px-2 py-1 bg-foreground text-background text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
-                                {item.label}
-                            </span>
+                            <span className="text-[10px] font-medium">{item.label}</span>
                         </Link>
                     );
                 })}
             </nav>
 
-            {/* Bottom Actions */}
-            <div className="flex flex-col gap-4 mt-auto">
-                {/* Login/Logout Button */}
-                {/* Login/Logout Button */}
-                {isAuthenticated ? (
-                    <button
-                        onClick={logout}
-                        className="w-10 h-10 rounded-lg overflow-hidden relative group flex items-center justify-center bg-surface-hover"
-                        aria-label="Logout"
-                    >
-                        {user?.picture ? (
-                            // eslint-disable-next-line @next/next/no-img-element
-                            <img src={user.picture} alt={user.name} className="w-full h-full object-cover" />
-                        ) : (
-                            <span className="font-bold text-foreground text-sm">
-                                {user?.name?.charAt(0) || 'U'}
-                            </span>
-                        )}
-
-                        <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                            <LogOut size={16} className="text-white" />
-                        </div>
-                        <span className="absolute left-full ml-2 px-2 py-1 bg-foreground text-background text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-50">
-                            Logout ({user?.name || 'User'})
-                        </span>
-                    </button>
-                ) : (
-                    <button
-                        onClick={login}
-                        className="w-10 h-10 rounded-lg flex items-center justify-center text-muted hover:text-foreground hover:bg-surface-hover transition-all group relative"
-                        aria-label="Login with Google"
-                    >
-                        <LogIn size={20} />
-                        <span className="absolute left-full ml-2 px-2 py-1 bg-foreground text-background text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
-                            Login with Google
-                        </span>
-                    </button>
-                )}
-
-                {/* Theme Toggle */}
-                <button
-                    onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-                    className="w-10 h-10 rounded-lg flex items-center justify-center text-muted hover:text-foreground hover:bg-surface-hover transition-all"
-                    aria-label="Toggle theme"
+            {/* Mobile Top Bar - For theme toggle and user profile */}
+            <div className="md:hidden fixed top-0 left-0 right-0 h-14 bg-surface/80 backdrop-blur-lg border-b border-border flex items-center justify-between px-4 z-40">
+                {/* Logo */}
+                <Link
+                    href="/"
+                    className="w-8 h-8 rounded-lg bg-foreground text-background flex items-center justify-center font-bold text-sm"
                 >
-                    {!mounted ? (
-                        <Sun size={20} />
-                    ) : theme === 'dark' ? (
-                        <Sun size={20} />
+                    M
+                </Link>
+
+                {/* Right Actions */}
+                <div className="flex items-center gap-2">
+                    {/* Theme Toggle */}
+                    <button
+                        onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+                        className="w-9 h-9 rounded-lg flex items-center justify-center text-muted active:bg-surface-hover transition-all"
+                        aria-label="Toggle theme"
+                    >
+                        {!mounted ? (
+                            <Sun size={18} />
+                        ) : theme === 'dark' ? (
+                            <Sun size={18} />
+                        ) : (
+                            <Moon size={18} />
+                        )}
+                    </button>
+
+                    {/* Login/Logout Button */}
+                    {isAuthenticated ? (
+                        <button
+                            onClick={logout}
+                            className="w-9 h-9 rounded-lg overflow-hidden flex items-center justify-center bg-surface-hover"
+                            aria-label="Logout"
+                        >
+                            {user?.picture ? (
+                                // eslint-disable-next-line @next/next/no-img-element
+                                <img src={user.picture} alt={user.name} className="w-full h-full object-cover" />
+                            ) : (
+                                <span className="font-bold text-foreground text-xs">
+                                    {user?.name?.charAt(0) || 'U'}
+                                </span>
+                            )}
+                        </button>
                     ) : (
-                        <Moon size={20} />
+                        <button
+                            onClick={login}
+                            className="w-9 h-9 rounded-lg flex items-center justify-center text-muted active:bg-surface-hover transition-all"
+                            aria-label="Login with Google"
+                        >
+                            <LogIn size={18} />
+                        </button>
                     )}
-                </button>
+                </div>
             </div>
-        </aside>
+        </>
     );
 }
