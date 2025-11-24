@@ -1,11 +1,23 @@
-import { getHabitData } from '@/app/actions';
+'use client';
+
+import { useData } from '@/contexts/DataContext';
 import Tools from '@/components/Tools';
 import HabitManager from '@/components/HabitManager';
-
 import DataResetSection from '@/components/DataResetSection';
 
-export default async function SettingsPage() {
-    const data = await getHabitData();
+export default function SettingsPage() {
+    const { data, isLoading } = useData();
+
+    if (isLoading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                <div className="animate-pulse flex flex-col items-center gap-4">
+                    <div className="w-12 h-12 rounded-full border-4 border-foreground/20 border-t-foreground animate-spin" />
+                    <p className="text-muted text-sm">Loading settings...</p>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <main className="min-h-screen p-4 sm:p-8 max-w-[1400px] mx-auto space-y-8 relative overflow-hidden">

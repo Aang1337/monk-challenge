@@ -1,12 +1,25 @@
-import { getHabitData } from '@/app/actions';
+'use client';
+
+import { useData } from '@/contexts/DataContext';
 import DailyTracker from '@/components/DailyTracker';
 import ActiveCalendar from '@/components/ActiveCalendar';
 import MonthlySummary from '@/components/MonthlySummary';
 
-export default async function CalendarPage() {
-  const data = await getHabitData();
+export default function CalendarPage() {
+  const { data, isLoading } = useData();
   const now = new Date();
   const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-pulse flex flex-col items-center gap-4">
+          <div className="w-12 h-12 rounded-full border-4 border-foreground/20 border-t-foreground animate-spin" />
+          <p className="text-muted text-sm">Loading calendar...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <main className="min-h-screen p-4 sm:p-8 max-w-[1600px] mx-auto space-y-8 relative overflow-hidden">

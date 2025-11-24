@@ -3,11 +3,12 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Edit2, X, Check, Trash2, GripVertical } from 'lucide-react';
-import { addHabitAction, updateHabitAction, deleteHabitAction, reorderHabitsAction } from '@/app/actions';
+import { useData } from '@/contexts/DataContext';
 import { Habit } from '@/lib/storage';
 import clsx from 'clsx';
 
 export default function HabitManager({ habits }: { habits: Habit[] }) {
+    const { addHabit, updateHabit, deleteHabit, reorderHabits } = useData();
     const [editingId, setEditingId] = useState<string | null>(null);
     const [formData, setFormData] = useState({ label: '', description: '' });
     const [showForm, setShowForm] = useState(false);
@@ -24,9 +25,9 @@ export default function HabitManager({ habits }: { habits: Habit[] }) {
         if (!formData.label) return;
 
         if (editingId) {
-            await updateHabitAction({ id: editingId, ...formData });
+            await updateHabit({ id: editingId, ...formData });
         } else {
-            await addHabitAction({
+            await addHabit({
                 id: formData.label.toLowerCase().replace(/\s+/g, '-'),
                 ...formData
             });
@@ -42,7 +43,7 @@ export default function HabitManager({ habits }: { habits: Habit[] }) {
 
     const handleDelete = async (id: string) => {
         if (confirm('Delete this habit? This action cannot be undone.')) {
-            await deleteHabitAction(id);
+            await deleteHabit(id);
         }
     };
 
@@ -51,16 +52,21 @@ export default function HabitManager({ habits }: { habits: Habit[] }) {
     };
 
     const handleDragOver = (e: React.DragEvent, index: number) => {
+        e.preventDefault(); // Allow drop
+    };
+
+    const handleDrop = (e: React.DragEvent, dropIndex: number) => {
         e.preventDefault();
-        if (draggedIndex === null || draggedIndex === index) return;
+
+        if (draggedIndex === null || draggedIndex === dropIndex) return;
 
         const newHabits = [...habits];
         const draggedHabit = newHabits[draggedIndex];
         newHabits.splice(draggedIndex, 1);
-        newHabits.splice(index, 0, draggedHabit);
+        newHabits.splice(dropIndex, 0, draggedHabit);
 
-        setDraggedIndex(index);
-        reorderHabitsAction(newHabits);
+        reorderHabits(newHabits);
+        setDraggedIndex(null);
     };
 
     const handleDragEnd = () => {
@@ -162,6 +168,7 @@ export default function HabitManager({ habits }: { habits: Habit[] }) {
                             draggable
                             onDragStart={() => handleDragStart(index)}
                             onDragOver={(e) => handleDragOver(e, index)}
+                            onDrop={(e) => handleDrop(e, index)}
                             onDragEnd={handleDragEnd}
                             className={clsx(
                                 "group bg-surface hover:bg-surface-hover border border-border rounded-xl p-4 transition-all cursor-move",

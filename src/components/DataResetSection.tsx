@@ -22,6 +22,8 @@ export default function DataResetSection() {
     const handleReset = async () => {
         setIsDeleting(true);
         await resetDataAction();
+        // Clear all local state including celebration flags
+        localStorage.clear();
         setIsDeleting(false);
         setShowModal(false);
         setCountdown(5);

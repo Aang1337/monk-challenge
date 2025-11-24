@@ -1,29 +1,7 @@
 {
-  "habits": [
-    {
-      "id": "debug-habit",
-      "label": "Debug Habit",
-      "description": ""
-    },
-    {
-      "id": "morning-exercise",
-      "label": "Morning Exercise",
-      "description": "30 min workout"
-    },
-    {
-      "id": "read-books",
-      "label": "Read Books",
-      "description": "Read for 20 minutes"
-    }
-  ],
+  "habits": [],
   "dailyTasks": {},
-  "logs": {
-    "2025-11-24": {
-      "debug-habit": true,
-      "morning-exercise": true,
-      "read-books": true
-    }
-  },
+  "logs": {},
   "notes": {},
   "pomodoro": {}
 }

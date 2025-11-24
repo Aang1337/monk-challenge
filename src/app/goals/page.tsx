@@ -50,7 +50,10 @@ export default function GoalsPage() {
     for (let i = 0; i < 365; i++) {
       const checkDate = new Date(today);
       checkDate.setDate(checkDate.getDate() - i);
-      const dateStr = checkDate.toISOString().split('T')[0];
+      const year = checkDate.getFullYear();
+      const month = String(checkDate.getMonth() + 1).padStart(2, '0');
+      const day = String(checkDate.getDate()).padStart(2, '0');
+      const dateStr = `${year}-${month}-${day}`;
 
       const dayLogs = data.logs[dateStr] || {};
       const completed = Object.values(dayLogs).filter(Boolean).length;

@@ -1,10 +1,10 @@
 'use client';
 
-import { useState, useTransition, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Check, Trophy } from 'lucide-react';
 import clsx from 'clsx';
-import { toggleHabitAction } from '@/app/actions';
+import { useData } from '@/contexts/DataContext';
 import type { Habit } from '@/lib/storage';
 import CelebrationPopup from './CelebrationPopup';
 import { getCelebration } from '@/lib/celebrationData';
@@ -16,7 +16,7 @@ interface DailyTrackerProps {
 }
 
 export default function DailyTracker({ habits, logs, today }: DailyTrackerProps) {
-    const [isPending, startTransition] = useTransition();
+    const { toggleHabit } = useData();
     const [showCelebration, setShowCelebration] = useState(false);
     const [celebration, setCelebration] = useState({ gif: '', quote: '' });
     const previousCompletedRef = useRef(false);
@@ -30,23 +30,27 @@ export default function DailyTracker({ habits, logs, today }: DailyTrackerProps)
         const celebrationKey = `celebration-shown-${today}`;
         const hasShownToday = localStorage.getItem(celebrationKey);
 
-        if (allCompleted && !hasShownToday && !previousCompletedRef.current) {
-            const newCelebration = getCelebration();
-            setCelebration(newCelebration);
-            setShowCelebration(true);
-            localStorage.setItem(celebrationKey, 'true');
+        if (allCompleted) {
+            if (!hasShownToday && !previousCompletedRef.current) {
+                const newCelebration = getCelebration();
+                setCelebration(newCelebration);
+                setShowCelebration(true);
+                localStorage.setItem(celebrationKey, 'true');
+            }
+        } else {
+            // If not all completed (e.g. user unchecked an item), reset the flag
+            // This allows the celebration to show again if they re-complete everything
+            localStorage.removeItem(celebrationKey);
         }
 
         previousCompletedRef.current = allCompleted;
     }, [allCompleted, today]);
 
-    const handleToggleHabit = (habitId: string) => {
+    const handleToggleHabit = async (habitId: string) => {
         const isCurrentlyCompleted = logs[today]?.[habitId] || false;
         if (isCurrentlyCompleted) return; // Prevent unchecking
 
-        startTransition(async () => {
-            await toggleHabitAction(today, habitId);
-        });
+        await toggleHabit(today, habitId);
     };
 
     return (
