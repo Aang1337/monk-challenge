@@ -4,15 +4,25 @@ import { useGoogleDrive } from '@/contexts/GoogleDriveContext';
 import Sidebar from '@/components/Sidebar';
 import LoginScreen from '@/components/LoginScreen';
 import { useEffect, useState } from 'react';
+import { useRouter, usePathname } from 'next/navigation';
 
 export default function AuthWrapper({ children }: { children: React.ReactNode }) {
     const { isAuthenticated, isLoading } = useGoogleDrive();
     const [showContent, setShowContent] = useState(false);
+    const router = useRouter();
+    const pathname = usePathname();
 
     // Prevent hydration mismatch by waiting for mount
     useEffect(() => {
         setShowContent(true);
     }, []);
+
+    // Redirect to home after login if not already there
+    useEffect(() => {
+        if (isAuthenticated && pathname !== '/' && showContent) {
+            router.push('/');
+        }
+    }, [isAuthenticated, pathname, router, showContent]);
 
     if (!showContent) return null;
 

@@ -1,7 +1,17 @@
 {
-  "habits": [],
+  "habits": [
+    {
+      "id": "debug-habit",
+      "label": "Debug Habit",
+      "description": ""
+    }
+  ],
   "dailyTasks": {},
-  "logs": {},
+  "logs": {
+    "2025-11-24": {
+      "debug-habit": true
+    }
+  },
   "notes": {},
   "pomodoro": {}
 }
