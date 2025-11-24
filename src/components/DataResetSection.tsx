@@ -2,9 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import { Trash2, AlertTriangle, X } from 'lucide-react';
-import { resetDataAction } from '@/app/actions';
+import { useData } from '@/contexts/DataContext';
 
 export default function DataResetSection() {
+    const { resetData } = useData();
     const [showModal, setShowModal] = useState(false);
     const [countdown, setCountdown] = useState(5);
     const [isDeleting, setIsDeleting] = useState(false);
@@ -21,7 +22,7 @@ export default function DataResetSection() {
 
     const handleReset = async () => {
         setIsDeleting(true);
-        await resetDataAction();
+        await resetData();
         // Clear all local state including celebration flags
         localStorage.clear();
         setIsDeleting(false);

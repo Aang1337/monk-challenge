@@ -29,6 +29,7 @@ interface DataContextType {
     addDailyTask: (date: string, label: string) => Promise<void>;
     deleteDailyTask: (date: string, taskId: string) => Promise<void>;
     toggleDailyTask: (date: string, taskId: string) => Promise<void>;
+    resetData: () => Promise<void>;
 }
 
 const DataContext = createContext<DataContextType>({
@@ -46,6 +47,7 @@ const DataContext = createContext<DataContextType>({
     addDailyTask: async () => { },
     deleteDailyTask: async () => { },
     toggleDailyTask: async () => { },
+    resetData: async () => { },
 });
 
 export const useData = () => useContext(DataContext);
@@ -234,6 +236,10 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
         await updateData(newData);
     };
 
+    const resetData = async () => {
+        await updateData(INITIAL_DATA);
+    };
+
     return (
         <DataContext.Provider value={{
             data,
@@ -249,7 +255,8 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
             updatePomodoroTime,
             addDailyTask,
             deleteDailyTask,
-            toggleDailyTask
+            toggleDailyTask,
+            resetData
         }}>
             {children}
         </DataContext.Provider>
