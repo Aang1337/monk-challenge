@@ -7,7 +7,7 @@ import { useEffect, useState, useRef } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 
 // Set to true to bypass login for development
-const DEV_BYPASS_LOGIN = true;
+const DEV_BYPASS_LOGIN = false;
 
 export default function AuthWrapper({ children }: { children: React.ReactNode }) {
     const { isAuthenticated, isLoading } = useGoogleDrive();
