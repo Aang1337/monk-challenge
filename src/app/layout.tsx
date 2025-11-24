@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { GoogleDriveProvider } from "@/contexts/GoogleDriveContext";
+import { DataProvider } from "@/contexts/DataContext";
 import AuthWrapper from "@/components/AuthWrapper";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -33,17 +34,19 @@ export default function RootLayout({
         </div>
 
         <GoogleDriveProvider>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="dark"
-            forcedTheme="dark"
-            enableSystem={false}
-            disableTransitionOnChange
-          >
-            <AuthWrapper>
-              {children}
-            </AuthWrapper>
-          </ThemeProvider>
+          <DataProvider>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="dark"
+              forcedTheme="dark"
+              enableSystem={false}
+              disableTransitionOnChange
+            >
+              <AuthWrapper>
+                {children}
+              </AuthWrapper>
+            </ThemeProvider>
+          </DataProvider>
         </GoogleDriveProvider>
       </body>
     </html>

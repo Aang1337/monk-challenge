@@ -1,13 +1,7 @@
 {
   "habits": [],
   "dailyTasks": {},
-  "logs": {
-    "2025-11-24": {
-      "no-instalgram": true,
-      "no-move": true,
-      "no-social-media": true
-    }
-  },
+  "logs": {},
   "notes": {},
   "pomodoro": {}
 }

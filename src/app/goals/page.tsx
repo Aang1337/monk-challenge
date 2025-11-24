@@ -1,9 +1,22 @@
-import { getHabitData } from '@/app/actions';
+'use client';
+
+import { useData } from '@/contexts/DataContext';
 import Milestones from '@/components/Milestones';
 import ProgressChart from '@/components/ProgressChart';
 
-export default async function GoalsPage() {
-  const data = await getHabitData();
+export default function GoalsPage() {
+  const { data, isLoading } = useData();
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-pulse flex flex-col items-center gap-4">
+          <div className="w-12 h-12 rounded-full border-4 border-foreground/20 border-t-foreground animate-spin" />
+          <p className="text-muted text-sm">Loading goals...</p>
+        </div>
+      </div>
+    );
+  }
 
   // Calculate stats
   const totalDays = Object.keys(data.logs).length;
